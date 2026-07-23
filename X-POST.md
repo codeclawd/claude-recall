@@ -8,7 +8,7 @@ the runs that fail") and to `CodeClawd X Strategy`. No three-item lists, no em-d
 
 ## Primary post (Premium — link in-post, no penalty)
 
-> Everyone ships coding-agent memory as a vector DB and an MCP server.
+> Coding-agent memory defaults to a vector DB and an MCP server.
 >
 > I benchmarked that against keyword search on my own vault.
 >
@@ -25,16 +25,16 @@ the runs that fail") and to `CodeClawd X Strategy`. No three-item lists, no em-d
 ## Thread (optional)
 
 **2/**
-> Why did semantic lose? On a personal vault it kept returning pages that were related but wrong, and it took 1 to 16 seconds to do it. The embeddings were current. They just weren't better.
+> The embeddings were current, but they returned pages that were related and wrong, taking 1 to 16 seconds per query. Semantic search lost on accuracy and on speed.
 
 **3/**
-> The fix was two boring ideas. IDF scoring with length normalization, because raw match counts just rank the biggest file first. And a strict gate that reads word choice, because "design" should not summon your redesign doc.
+> The fix was two boring ideas. IDF scoring with length normalization, because raw match counts rank the biggest file first. And a strict gate that reads word choice, because "design" should not summon your redesign doc.
 
 **4/**
-> The rule that matters more than the ranking: a missed recall costs nothing, since the agent just reads the repo. A false injection pollutes the context window for the rest of the session. So it stays silent unless it is sure.
+> The rule that matters more than the ranking: a missed recall costs nothing, since the agent reads the repo anyway. A false injection pollutes the context window for the rest of the session. It stays silent unless it is sure.
 
 **5/**
-> One file, no dependencies. Point it at any folder of Markdown and fork it. Every fire is logged, so you can grade precision on your own vault. If semantic wins on your corpus, keep it. I just measured first.
+> It's one file with no dependencies. Point it at any folder of Markdown and fork it. The tool logs every fire, so you can grade precision on your own vault. If semantic wins on your corpus, keep it. I measured first.
 
 ## Shorter standalone variant
 
