@@ -31,10 +31,10 @@ the runs that fail") and to `CodeClawd X Strategy`. No three-item lists, no em-d
 > The fix was two boring ideas. IDF scoring with length normalization, because raw match counts rank the biggest file first. And a strict gate that reads word choice, because "design" should not summon your redesign doc.
 
 **4/**
-> The rule that matters more than the ranking: a missed recall costs nothing, since the agent reads the repo anyway. A false injection pollutes the context window for the rest of the session. It stays silent unless it is sure.
+> A missed recall costs nothing, since the agent reads the repo anyway. A false injection pollutes the context window for the rest of the session. I tuned the gate around that asymmetry. It fires only on a page-name hit or an explicit recall phrase, and stays quiet otherwise.
 
 **5/**
-> It's one file with no dependencies. Point it at any folder of Markdown and fork it. The tool logs every fire, so you can grade precision on your own vault. If semantic wins on your corpus, keep it. I measured first.
+> It's one file with no dependencies. Point it at any folder of Markdown and fork it. The tool logs every fire, so you can grade precision on your own vault. If semantic wins on your corpus, keep it.
 
 ## Shorter standalone variant
 
