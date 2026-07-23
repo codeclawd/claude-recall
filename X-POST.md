@@ -6,7 +6,7 @@ the runs that fail") and to `CodeClawd X Strategy`. No three-item lists, no em-d
 
 ---
 
-## Primary post
+## Primary post (Premium — link in-post, no penalty)
 
 > Everyone ships coding-agent memory as a vector DB and an MCP server.
 >
@@ -15,12 +15,12 @@ the runs that fail") and to `CodeClawd X Strategy`. No three-item lists, no em-d
 > Embeddings scored 1/5. Tuned keyword search scored 15/15, and ran 400x faster.
 >
 > I deleted the embeddings.
-
-## First reply (the link)
-
-> One Python file, standard library only. It never calls an API. Wired as a UserPromptSubmit hook.
 >
 > github.com/codeclawd/claude-recall
+
+## Optional first reply (adds the "how", keeps the hook clean)
+
+> One Python file, standard library only. It never calls an API. Wired as a UserPromptSubmit hook.
 
 ## Thread (optional)
 
@@ -44,18 +44,15 @@ the runs that fail") and to `CodeClawd X Strategy`. No three-item lists, no em-d
 >
 > So I shipped a recall hook with no embeddings and no MCP. One Python file.
 >
-> (link in reply)
+> github.com/codeclawd/claude-recall
 
 ---
 
-## Where the link goes — decide by your Premium status
+## Link placement — you're on Premium, so it's in-post
 
-- **Not on X Premium:** link in the **first reply**, not the post. Your own strategy doc
-  (`CodeClawd X Strategy`, line 43) and current data agree — non-Premium link posts get
-  near-zero median reach in 2026. The primary/reply split above is built for this.
-- **On X Premium:** the link penalty does not apply to you. You can put
-  `github.com/codeclawd/claude-recall` directly in the primary post if you prefer one clean
-  tweet. Move the reply's line up into the post and drop the "(link in reply)".
+The 2026 link-reach penalty applies to non-Premium accounts only. You're Premium, so the
+repo link sits directly in the primary post above with no reach cost. The "optional first
+reply" is now just a place to add the one-line "how" without lengthening the hook tweet.
 
 ## Two moves from your strategy doc worth taking here
 
