@@ -28,7 +28,7 @@ the runs that fail") and to `CodeClawd X Strategy`. No three-item lists, no em-d
 > The embeddings were current, but they returned pages that were related and wrong, taking 1 to 16 seconds per query. Semantic search lost on accuracy and on speed.
 
 **3/**
-> The fix was two boring ideas. IDF scoring with length normalization, because raw match counts rank the biggest file first. And a strict gate that reads word choice, because "design" should not summon your redesign doc.
+> The fix was two boring ideas. IDF scoring with length normalization, because raw match counts rank the biggest file first. A strict gate then reads word choice, so "design" doesn't pull up your redesign doc.
 
 **4/**
 > A missed recall costs nothing, since the agent reads the repo anyway. A false injection pollutes the context window for the rest of the session. I tuned the gate around that asymmetry. It fires only on a page-name hit or an explicit recall phrase, and stays quiet otherwise.
