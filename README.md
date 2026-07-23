@@ -53,7 +53,7 @@ Full methodology and numbers: **[BENCHMARK.md](BENCHMARK.md)**.
 ## Install
 
 ```bash
-git clone https://github.com/YOURNAME/claude-recall && cd claude-recall
+git clone https://github.com/codeclawd/claude-recall && cd claude-recall
 ./install.sh                      # asks for your vault path, wires the hook
 # restart Claude Code
 ```
