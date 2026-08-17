@@ -85,9 +85,44 @@ On every prompt, the hook:
    scores pages by length-normalized IDF over the salient terms plus tag/title/alias hits.
 3. **Injects the top few.** Emits the matching pages (with line-anchored snippets) as
    `additionalContext`, capped to a tight character budget so it never floods the window.
+   Each page carries a **freshness stamp** — see below.
 
 Every fire is logged to `~/.claude/logs/brain-recall.jsonl` so you can audit precision on
 your own data and tune the gate.
+
+## Freshness stamps — why recall needs provenance
+
+Retrieval is only as good as the reader's willingness to distrust it. An undated snippet
+reads as fact.
+
+This bit us. A recalled line said a daemon was *"already running via brew services"* — true
+when written, false for months by the time it surfaced, because the service had moved into
+Docker. Nothing in the injected text marked it as old, so it was believed.
+
+So every injected page now gets a compact stamp:
+
+```
+• wiki/Fresh Page.md  [verified 2026-08-16] — Fresh Page
+• wiki/Stale Page.md  [updated 2026-01-05 · 224d old — STALE? · paused · ⚠has-warning] — Stale Page
+• wiki/Undated Page.md  [undated] — Undated Page
+```
+
+It reads these optional YAML frontmatter fields. **All of them are optional** — a vault of
+plain Markdown still works, you just get `undated`, which is itself the useful signal:
+
+| Field | Role |
+|---|---|
+| `verified:` | when the claim was last checked **against reality** — preferred over the rest |
+| `updated:` | when the page was last touched — fallback |
+| `created:` | when the page was written — last resort |
+| `status:` | surfaced whenever it is anything other than `active` |
+
+Anything older than 30 days also gets an explicit `Nd old — STALE?`, and a page containing
+an Obsidian `> [!warning]` callout is flagged `⚠has-warning` — a page that already
+contradicts itself should be read, not skimmed.
+
+The distinction between `updated` and `verified` is the whole point: `updated` only says
+when someone touched the file. It cannot tell you whether the claim inside is still true.
 
 ## Configure
 
