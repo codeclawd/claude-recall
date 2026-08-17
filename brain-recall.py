@@ -41,7 +41,7 @@ MEASURED, NOT ASSUMED (every number below came from an independent grader)
   of it in ~39ms, while shelling out to ripgrep (once for ranking, then once per
   page for snippets) cost p95 2.7s / max 5.6s. The corpus fits in memory; use it.
 """
-import sys, json, os, re, glob, difflib, math, unicodedata
+import sys, json, os, re, glob, difflib, math, unicodedata, datetime as _dt
 
 # --- Config: point this at your notes. Zero dependencies, stdlib only. ---------
 # Your vault is any folder of Markdown files (Obsidian, plain notes, a docs/ dir).
@@ -52,7 +52,8 @@ VAULT = os.path.expanduser(
     or "~/Documents/SecondBrain"
 )
 MAX_PAGES = 5
-MAX_CHARS = 1900
+MAX_CHARS = 2100  # +200 over the original 1900 to pay for the freshness stamps,
+                  # so adding provenance never silently drops a page from the budget
 MAX_TERMS = 10
 
 # HUMANS TYPE SHORT; MACHINES PASTE LONG. Measured over this user's real corpus:
@@ -363,6 +364,55 @@ def page_desc(text):
     return h.group(1).strip()[:140] if h else ""
 
 
+def freshness(text):
+    """Compact provenance stamp appended to each injected page line.
+
+    Why this exists: an injected snippet said a daemon was "already running via
+    brew services" — true when written, false for months by the time it was
+    recalled, because the service had moved into Docker. The line carried no date,
+    so a stale claim was indistinguishable from a current one and was believed.
+
+    An undated snippet reads as fact; a dated one invites the check. This is the
+    characteristic failure of any recall system: retrieval is only as good as the
+    reader's ability to distrust it, and that needs provenance at the point of use.
+
+    Reads these optional YAML frontmatter fields (all absent is fine — you get
+    "undated", which is itself the useful signal):
+        verified:  when the claim was last checked against reality  (preferred)
+        updated:   when the page was last touched                   (fallback)
+        created:   when the page was written                        (last resort)
+        status:    surfaced when it is anything other than "active"
+    Pages containing an Obsidian `> [!warning]` callout are flagged too, since a
+    page that already contradicts itself should be read, not skimmed.
+    """
+    m = re.match(r"\A---\n(.*?)\n---\n", text, re.S)
+    fm = m.group(1) if m else ""
+
+    def field(k):
+        mm = re.search(rf"^\s*{k}:\s*(.+)$", fm, re.M | re.I)
+        return mm.group(1).strip().strip('"\'') if mm else ""
+
+    bits = []
+    date = field("verified") or field("updated") or field("created")
+    if date:
+        label = "verified" if field("verified") else "updated"
+        bits.append(f"{label} {date[:10]}")
+        try:
+            age = (_dt.date.today() - _dt.date.fromisoformat(date[:10])).days
+            if age > 30:
+                bits.append(f"{age}d old — STALE?")
+        except ValueError:
+            pass  # unparseable date: show it verbatim rather than guess an age
+    else:
+        bits.append("undated")
+    st = field("status")
+    if st and st.lower() != "active":
+        bits.append(st)
+    if "[!warning]" in text:
+        bits.append("⚠has-warning")
+    return f"  [{' · '.join(bits)}]" if bits else ""
+
+
 def snippets(text, terms):
     out = []
     for i, line in enumerate(text.splitlines(), 1):
@@ -451,7 +501,7 @@ def main():
     budget = MAX_CHARS
     for p in ranked:
         chunk = "\n".join(
-            [f"• {os.path.relpath(p, VAULT)}" +
+            [f"• {os.path.relpath(p, VAULT)}" + freshness(docs[p]) +
              (f" — {page_desc(docs[p])}" if page_desc(docs[p]) else "")]
             + snippets(docs[p], terms))
         if len(chunk) > budget:

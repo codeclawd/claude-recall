@@ -2,3 +2,9 @@ __pycache__/
 *.pyc
 .DS_Store
 *.jsonl
+
+# Local agent/session state — never belongs in a released tool.
+# (These were tracked until 2026-08-17 and leaked local paths, session names
+# and cost totals into the public repo.)
+.omc/
+.claude/
