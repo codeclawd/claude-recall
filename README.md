@@ -20,6 +20,17 @@ you:    "what did we decide about the payments provider?"
 
 ---
 
+## Does any of it get read back?
+
+That is the only question that matters, and most notes systems never ask it. Over 25 active
+days and 564 fires this one injected **390 tokens per prompt** and surfaced **94 of 97 pages**
+at least once. A blind sample of ten scored 5 strong, 2 partial and **3 outright misses**.
+
+[**AUDIT.md**](AUDIT.md) has the rest, including the parts that went against me: a measurement
+of my own fix that did not reproduce, a false positive the fix introduced, an admission that I
+never wrote down what would count as failure, and an earlier audit that called the whole thing
+"partially worth it."
+
 ## The result that made me delete the embeddings
 
 Measured on my own vault (83 Markdown files, 1.3 MB), graded by held-out queries:
@@ -123,6 +134,31 @@ contradicts itself should be read, not skimmed.
 
 The distinction between `updated` and `verified` is the whole point: `updated` only says
 when someone touched the file. It cannot tell you whether the claim inside is still true.
+
+## Upgrading? It now emits fewer pages
+
+Earlier versions returned exactly five pages on every fire, whatever the top score was. That
+padded misses with confident-looking noise, and a padded miss reads exactly like a hit. It now
+emits between zero and five, by score. Pages you *name* in the prompt always come through.
+
+Expect roughly half as many injected pages, and silence on prompts that previously got five
+irrelevant ones. That is the fix, not a regression. The numbers are in [AUDIT.md](AUDIT.md).
+
+## The rest of the loop
+
+Recall is one stage. Reading is worthless if nothing writes, so these ship alongside it. Each is
+optional and independently installable.
+
+| | |
+|---|---|
+| `hooks/session-log.sh` | Stop hook. Writes the session summary into `daily-notes/`. |
+| `hooks/vault-sanitize.py` | Scrubs secrets and control tags before anything is written. The guard **fails closed** — no sanitizer, no write. A vault is durable and syncable, so a key landing in one is exfiltrated on the next sync and survives in git history after deletion. |
+| `hooks/writeback-check.py` | Stop hook that refuses to end a substantial session which filed nothing durable. |
+| `maintain/brain-sweep.py` | Read-only. Shortlists duplication, staleness and contradictions. Deletes nothing. |
+| `maintain/gen-lessons-digest.py` | Compiles a lessons file into a short always-loaded digest. |
+
+[**SCHEMA.md**](SCHEMA.md) covers the vault layout, and the two conventions that actually change
+retrieval quality: `aliases` and bi-temporal `verified_against` keys.
 
 ## Configure
 
