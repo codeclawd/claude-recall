@@ -50,7 +50,10 @@ VAULT = os.path.expanduser(
 WIKI = os.path.join(VAULT, "wiki")
 STATE_DIR = os.path.expanduser("~/.claude/logs")
 STATE = os.path.join(STATE_DIR, "vault-writeback.json")
-NOW_FILE = os.path.expanduser("~/.remember/now.md")
+# Source of the session summary, same override session-log.sh uses.
+NOW_FILE = os.path.expanduser(
+    os.environ.get("CLAUDE_RECALL_SESSION_LOG") or "~/.remember/now.md"
+)
 
 MIN_SESSION_CHARS = 600     # below this nothing durable was plausibly produced
 QUIET_HOURS = 6             # wiki/ untouched this long => nothing was filed
