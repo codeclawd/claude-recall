@@ -8,3 +8,6 @@ __pycache__/
 # and cost totals into the public repo.)
 .omc/
 .claude/
+
+# internal planning — names client work, never publish
+.planning/
